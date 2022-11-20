@@ -7,7 +7,7 @@ export class GetData extends LitElement {
      
     };
   }
-  firstUpdated() {
+  updated() {
     this.getData();
   }
 
@@ -18,10 +18,6 @@ export class GetData extends LitElement {
       }
     `,
   ];
-
-  render() {
-    return html``;
-  }
 
   _sendData(data) {
     this.dispatchEvent(
