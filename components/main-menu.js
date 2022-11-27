@@ -4,6 +4,7 @@ export default class MainMenu extends LitElement {
   static get properties() {
     return {
       wiki: { type: Object },
+      item: { type: String },
     };
   }
 
@@ -16,17 +17,17 @@ export default class MainMenu extends LitElement {
       }
       .cardContainer {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr 1fr;
         grid-gap: 2em;
         margin-top: 2em;
         justify-items: center;
 
-        width: 80vw;
+        width: 90vw;
       }
       .card {
-        display:flex;
-        flex-direction:column;
+        display: flex;
+        flex-direction: column;
         background-color: white;
         padding: 1em;
         border-radius: 15px;
@@ -44,7 +45,7 @@ export default class MainMenu extends LitElement {
 
   constructor() {
     super();
-
+   
     this.wiki = [
       {
         name: "name",
@@ -52,7 +53,7 @@ export default class MainMenu extends LitElement {
       },
     ];
     this.dataTemplate();
-
+    
     this.addEventListener("ApiData", (e) => {
       this._dataFormat(e.detail.data.data);
       console.log(e.detail.data.data, "me oyes?");
@@ -62,34 +63,46 @@ export default class MainMenu extends LitElement {
   render() {
     return html`
       <div>
-        <h1>Hi!!!</h1>
+        <h1>Zelda's monsters</h1>
+        <select name="items" id="items" value="monsters" >
+          <option value="monsters">Monsters</option>
+          <option value="equipment">Equipment</option>
+          <option value="materials">Material</option>
+          <option value="creaturesNonFood">Creatures</option>
+          <option value="foodCreatures">Food Creatures</option>
+        </select>
+        <div>${console.log(this.shadowRoot.getElementById("items"), "valor del select" )
+        }</div>
+
         <get-data
           url="https://botw-compendium.herokuapp.com/api/v2/all"
         ></get-data>
-        ${this.dataTemplate()}
+        ${(this.dataTemplate())}
       </div>
     `;
   }
 
   dataTemplate() {
-    console.log(this.wiki, "pinta?");
+    
     return html`
       <div class="cardContainer">
         ${this.wiki.map(
           (element) =>
-          
             html`
-              <div class="card">
-                <h2>${element.name}</h2>
-                <img src="${element.img}" class="imageCard" />
-                <p>${element.description}</p>
-                ${element.location != null
-                  ? html` <p>Common locations:</p>
-                      ${element.location.map(
-                        (element) => html` <li class="locationList">${element}</li> `
-                      )}`
-                  : html`<p></p>`}
-              </div>
+              ${element.name != "name"
+                ? html` <div class="card">
+                    <h2>${element.name}</h2>
+                    <img src="${element.img}" class="imageCard" />
+                    <p>${element.description}</p>
+                    ${element.location != null
+                      ? html` <p>Common locations:</p>
+                          ${element.location.map(
+                            (element) =>
+                              html` <li class="locationList">${element}</li> `
+                          )}`
+                      : html`<p></p>`}
+                  </div>`
+                : html``}
             `
         )}
       </div>
@@ -106,6 +119,16 @@ export default class MainMenu extends LitElement {
       });
     });
     this.requestUpdate();
+    
   }
+
+  getItem(){
+    console.log(this.shadowRoot.getElementById("items").option);
+    this.requestUpdate();
+  }
+
+ 
+
+  
 }
 customElements.define("main-menu", MainMenu);
