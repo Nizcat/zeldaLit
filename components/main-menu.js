@@ -1,14 +1,12 @@
 import { LitElement, html, css } from "lit";
 import "../Data/get-data";
 export default class MainMenu extends LitElement {
+  static get properties() {
+    return {
+      wiki: { type: Object },
+    };
+  }
 
-    static get properties() {
-        return {
-          wiki: { type: Array },
-         
-        };
-    }
-    
   static styles = [
     css`
       :host {
@@ -20,7 +18,13 @@ export default class MainMenu extends LitElement {
   constructor() {
     super();
 
-    this.wiki = [];
+    this.wiki = [
+      {
+        name: "name",
+        location: [],
+      },
+    ];
+    this.dataTemplate();
 
     this.addEventListener("ApiData", (e) => {
       this._dataFormat(e.detail.data.data);
@@ -35,36 +39,47 @@ export default class MainMenu extends LitElement {
         <get-data
           url="https://botw-compendium.herokuapp.com/api/v2/all"
         ></get-data>
-        ${this.dataTemplate}
+        ${this.dataTemplate()}
       </div>
     `;
   }
 
-  get dataTemplate(){
+  dataTemplate() {
     console.log(this.wiki, "pinta?");
-    return html `
-    ${this.wiki.map(element => html`
-    <div class= "card" >
-        <div class= "card-content">
-            <h2>${element.name}</h2>
-            <img src="${element.img}">
-        </div>
-
-    </div>
-    `)}
-    `
+    return html`
+      <div>
+        ${this.wiki.map(
+          (element) =>
+            html`
+              <div class="card">
+                <div class="card-content">
+                  <h2>${element.name}</h2>
+                  <img src="${element.img}" />
+                  <p>${element.description}</p>
+                  ${element.location != null ? 
+                  html`
+                  <p>Common locations:</p>
+                    ${element.location.map(element => html` <li>${element}</li> `)}`
+                   :html`<p></p>`
+                  }
+                </div>
+              </div>
+            `
+        )}
+      </div>
+    `;
   }
 
   _dataFormat(data) {
-    let monsters = [];
-    
     data["monsters"].forEach((element) => {
-      monsters.push({
+      this.wiki.push({
         name: element.name,
-        img: element.img,
+        img: element.image,
+        description: element.description,
+        location: element.common_locations,
       });
     });
-    console.log(monsters, "monstruosss");
+    this.requestUpdate();
   }
 }
 customElements.define("main-menu", MainMenu);
