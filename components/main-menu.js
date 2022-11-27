@@ -11,6 +11,33 @@ export default class MainMenu extends LitElement {
     css`
       :host {
         display: flex;
+        background-color: #97e7bd;
+        justify-content: center;
+      }
+      .cardContainer {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-gap: 2em;
+        margin-top: 2em;
+        justify-items: center;
+
+        width: 80vw;
+      }
+      .card {
+        display:flex;
+        flex-direction:column;
+        background-color: white;
+        padding: 1em;
+        border-radius: 15px;
+        justify-content: calc();
+        align-items: center;
+      }
+      .imageCard {
+        box-shadow: 0.2em 0.2em #2926fc;
+      }
+      .locationList {
+        align-self: flex-start;
       }
     `,
   ];
@@ -47,22 +74,21 @@ export default class MainMenu extends LitElement {
   dataTemplate() {
     console.log(this.wiki, "pinta?");
     return html`
-      <div>
+      <div class="cardContainer">
         ${this.wiki.map(
           (element) =>
+          
             html`
               <div class="card">
-                <div class="card-content">
-                  <h2>${element.name}</h2>
-                  <img src="${element.img}" />
-                  <p>${element.description}</p>
-                  ${element.location != null ? 
-                  html`
-                  <p>Common locations:</p>
-                    ${element.location.map(element => html` <li>${element}</li> `)}`
-                   :html`<p></p>`
-                  }
-                </div>
+                <h2>${element.name}</h2>
+                <img src="${element.img}" class="imageCard" />
+                <p>${element.description}</p>
+                ${element.location != null
+                  ? html` <p>Common locations:</p>
+                      ${element.location.map(
+                        (element) => html` <li class="locationList">${element}</li> `
+                      )}`
+                  : html`<p></p>`}
               </div>
             `
         )}
