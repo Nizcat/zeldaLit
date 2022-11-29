@@ -4,6 +4,7 @@ export class GetData extends LitElement {
   static get properties() {
     return {
       url: { type: String },
+      item: {type: String},
      
     };
   }
@@ -37,6 +38,7 @@ export class GetData extends LitElement {
         return Promise.reject(response);
       })
       .then((data) => {
+        
         this._sendData(data);
       })
       .catch((error) => {

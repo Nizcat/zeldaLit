@@ -57,12 +57,11 @@ export default class MainMenu extends LitElement {
       
     this.addEventListener("ApiData", (e) => {
       this._dataFormat(e.detail.data.data);
-      console.log(e.detail.data.data, "me oyes?");
       this.requestUpdate();
     });
   
   }
-
+ 
   render() {
     return html`
       <div>
@@ -78,6 +77,7 @@ export default class MainMenu extends LitElement {
 
         <get-data
           url="https://botw-compendium.herokuapp.com/api/v2/all"
+          item = ${this.item}
         ></get-data>
         ${(this.dataTemplate())}
       </div> 
@@ -86,16 +86,15 @@ export default class MainMenu extends LitElement {
   firstUpdated() {
     super.firstUpdated();
     this.item =this.shadowRoot.getElementById("items").value;
-    console.log(this.item);
+    this.wiki;
 
   }
 
   dataTemplate() {
-    
     return html`
       <div class="cardContainer">
         ${this.wiki.map(
-          (element) =>
+          (element) =>          
             html`
               ${element.name != "name"
                 ? html` <div class="card">
@@ -118,9 +117,8 @@ export default class MainMenu extends LitElement {
   }
 
   _dataFormat(data) {
-   
     data[this.item].forEach((element) => {
-      this.wiki.push({
+         this.wiki.push({
         name: element.name,
         img: element.image,
         description: element.description,
@@ -133,7 +131,6 @@ export default class MainMenu extends LitElement {
   
 
   getItem(){
-    console.log("change",this.shadowRoot.getElementById("items").value);
     this.item =this.shadowRoot.getElementById("items").value;
     this.requestUpdate();
   }
