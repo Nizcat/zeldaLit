@@ -28,6 +28,7 @@ export class GetData extends LitElement {
       })
     );
   }
+  
 
   getData() {
     fetch(this.url)

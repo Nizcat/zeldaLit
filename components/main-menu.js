@@ -45,6 +45,7 @@ export default class MainMenu extends LitElement {
 
   constructor() {
     super();
+    
    
     this.wiki = [
       {
@@ -53,33 +54,40 @@ export default class MainMenu extends LitElement {
       },
     ];
     this.dataTemplate();
-    
+      
     this.addEventListener("ApiData", (e) => {
       this._dataFormat(e.detail.data.data);
       console.log(e.detail.data.data, "me oyes?");
+      this.requestUpdate();
     });
+  
   }
 
   render() {
     return html`
       <div>
         <h1>Zelda's monsters</h1>
-        <select name="items" id="items" value="monsters" >
+        <select name="items" id="items" @change="${this.getItem}" >
           <option value="monsters">Monsters</option>
           <option value="equipment">Equipment</option>
           <option value="materials">Material</option>
-          <option value="creaturesNonFood">Creatures</option>
-          <option value="foodCreatures">Food Creatures</option>
+          <option value="creatures.non_food">Creatures</option>
+          <option value="creatures.food">Food Creatures</option>
         </select>
-        <div>${console.log(this.shadowRoot.getElementById("items"), "valor del select" )
-        }</div>
+        
 
         <get-data
           url="https://botw-compendium.herokuapp.com/api/v2/all"
         ></get-data>
         ${(this.dataTemplate())}
-      </div>
+      </div> 
     `;
+  }
+  firstUpdated() {
+    super.firstUpdated();
+    this.item =this.shadowRoot.getElementById("items").value;
+    console.log(this.item);
+
   }
 
   dataTemplate() {
@@ -110,7 +118,8 @@ export default class MainMenu extends LitElement {
   }
 
   _dataFormat(data) {
-    data["monsters"].forEach((element) => {
+   
+    data[this.item].forEach((element) => {
       this.wiki.push({
         name: element.name,
         img: element.image,
@@ -121,9 +130,11 @@ export default class MainMenu extends LitElement {
     this.requestUpdate();
     
   }
+  
 
   getItem(){
-    console.log(this.shadowRoot.getElementById("items").option);
+    console.log("change",this.shadowRoot.getElementById("items").value);
+    this.item =this.shadowRoot.getElementById("items").value;
     this.requestUpdate();
   }
 
